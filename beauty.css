@@ -1,0 +1,152 @@
+@font-face {
+	font-family: 'NothingYouCouldDo';
+	src: url('fonts/Nothing_You_Could_Do/NothingYouCouldDo-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'QuicksandLight';
+	src: url('fonts/Quicksand/static/Quicksand-Light.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'QuicksandRegular';
+	src: url('fonts/Quicksand/static/Quicksand-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'QuicksandSemiBold';
+	src: url('fonts/Quicksand/static/Quicksand-SemiBold.ttf') format('truetype');
+}
+
+.flori_software_schrift {
+	font-family: NothingYouCouldDo;
+	font-size: 150px;
+	color: olivedrab;
+
+
+}
+
+body {
+	background-color:whitesmoke;
+	align-content: center;
+}
+.mittelteil {
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;
+	top: 0px;
+	width: 90%;
+	border-radius: 0px 0px 20px 20px;
+	background-color: silver;
+	align-content: center;
+	font-family: QuicksandLight;
+	font-size: 30px;
+}
+
+.titelbild {
+	width: 100%;
+}
+.menupunkt {
+	width: 11%;
+	
+}
+
+.inhalt {
+	padding: 10px;
+}
+.login {
+	text-align: right;
+}
+
+a:link, a:visited {
+	text-decoration: none;
+	color: olivedrab;
+}
+a:hover, a:active {
+	color: olive;
+}
+
+a.menu:link, a.menu:visited {
+	text-decoration: none;
+	color: black;
+	padding: 8px 15px;
+	text-align: center;
+	display: inline-block;
+}
+a.menu:hover, a.menu:active {
+	background-color: dimgray;
+	color: white;
+}
+
+
+select {
+	border: 0px;
+	margin-top: 0px;
+	margin-bottom: 5px;
+	padding: 5px;
+	height: 20px;
+	font-size: 12px;
+	font-weight: lighter;
+
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+
+	-moz-box-shadow: 3px 3px 10px #000;
+	-webkit-box-shadow: 3px 3px 10px #000;
+	box-shadow: 3px 3px 10px #000;
+}
+
+.nachricht {
+	font-size: 36px;
+	font-weight: lighter;
+}
+
+.downloadbutton {
+	background-color: lawngreen;
+	border-radius: 20px;
+	height: 30px;
+	color: white;
+	padding: 10px;
+	width: 200px;
+	text-align: center;
+}
+
+.zeile_orange:hover {
+    background-color: orange;
+}
+
+.my_title {
+	font-family: Arial Black, Helvetica;
+	font-weight: bolder;	
+	font-size: 120%;
+} 
+
+.my_small_title {
+	font-family: Arial Black, Helvetica;
+	font-weight: bolder;	
+	font-size: 100%;
+}
+
+.my_very_small_title {
+	font-family: Arial Black, Helvetica;	
+	font-size: 100%;
+}
+
+.my_little_title {
+	font-family: Arial, Helvetica;
+	font-weight: bolder;	
+	font-size: 100%;
+} 
+
+#zeile_weiss:hover {
+    background-color: white;
+}
+
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: blue;
+    opacity: 1; /* Firefox */
+}

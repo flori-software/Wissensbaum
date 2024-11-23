@@ -14,7 +14,27 @@ switch($aktion) {
         $benutzer->formular_stammdaten_lesen();
         echo 'Neuer Mitarbeiter gespeichert.<br>';
     break;
+
+    case 'wahl_mitarbeiter':
+        $_SESSION["id_mitarbeiter"] = $_POST["wahl_id_mitarbeiter"];
+    break;
+
+    case 'neuer_mitarbeiter':
+        $_SESSION["id_mitarbeiter"] = 0;
+    break;
+
+    case 'mitarbeiter_bearbeiten':
+        $benutzer->ID = $_SESSION["id_mitarbeiter"];
+        $benutzer->formular_stammdaten_lesen();
+        
+    break;
 }
+
+if(isset($_SESSION["id_mitarbeiter"])) {
+    $benutzer->ID = $_SESSION["id_mitarbeiter"];
+    $benutzer->stammdaten_lesen();
+}
+
 echo '<style>
     input {
         width: 80%;
@@ -25,14 +45,31 @@ echo '<style>
 </style>
 Hier können Sie die Profile Ihrer Mitarbeiter bearbeiten oder neue Mitarbeiter anlegen:';
 
-echo '<form action="mitarbeiter.php?aktion=mitarbeiter_speichern" method="POST">';
-Benutzer::formular_stammdaten($benutzer);
+if($benutzer->ID > 0) {
+    $aktion = "mitarbeiter_bearbeiten";
+} else {
+    $aktion = "mitarbeiter_speichern";
+}
+
+echo '<form action="mitarbeiter.php?aktion=wahl_mitarbeiter" method="POST">';
+Benutzer::dropdown_benutzer();
+echo '<input type="submit" value="Mitarbeiter auswählen">';
 echo '</form>';
 
+echo '<a href="mitarbeiter.php?aktion=neuer_mitarbeiter">Neuen Mitarbeiter anlegen</a>';
+
+echo '<form action="mitarbeiter.php?aktion='.$aktion.'" method="POST">';
+Benutzer::formular_stammdaten($benutzer);
+echo '</form>';
 
 include("page_end.php");
 ?>
 <script>
+// nach dem Laden der Seite soll die Funktion validierung aufgerufen werden
+window.onload = function() {
+    validierung();
+}
+
 function benutzername_automatisch_fuellen() {
 	// Automatisches Füllen des Benutzernamens
 	var vorname = document.getElementById("vorname").value;
@@ -52,14 +89,15 @@ function benutzername_automatisch_fuellen() {
 
 function validierung() {
     // Validierung der Eingaben - PLZ muss mindestens 4 Zahlen beinhalten, die Emailadresse muss ein @-Zeichen enthalten sowie im Teil nach dem @ einen Punkt, die Telefonnummer muss mindestens 5 Zahlen beinhalten, der Benutzername muss mindestens 5 Zeichen beinhalten
-    var vorname       = document.getElementById("vorname").value;
-    var nachname      = document.getElementById("nachname").value;
-    var benutzername  = document.getElementById("benutzername"). value;
-    var email         = document.getElementById("email").value;
-    var telefonnummer = document.getElementById("telefonnummer").value;
-    var mobil         = document.getElementById("mobil").value;
-    var passwort1     = document.getElementById("passwort1").value;
-    var passwort2     = document.getElementById("passwort2").value;
+    var id_mitarbeiter = document.getElementById("id_mitarbeiter").value;
+    var vorname        = document.getElementById("vorname").value;
+    var nachname       = document.getElementById("nachname").value;
+    var benutzername   = document.getElementById("benutzername"). value;
+    var email          = document.getElementById("email").value;
+    var telefonnummer  = document.getElementById("telefonnummer").value;
+    var mobil          = document.getElementById("mobil").value;
+    var passwort1      = document.getElementById("passwort1").value;
+    var passwort2      = document.getElementById("passwort2").value;
 
     var fehlermeldung = "";
 
@@ -103,9 +141,11 @@ function validierung() {
     // Sollten beide Passwortfelder leer sein, werden sie grau gefärbt
     
     if (passwort1 == "" && passwort2 == "") {
-        document.getElementById("passwort1").style.backgroundColor = "lightcoral";
-        document.getElementById("passwort2").style.backgroundColor = "lightcoral";
-        fehlermeldung += "Bitte geben Sie ein Passwort ein.<br>";
+        document.getElementById("passwort1").style.backgroundColor = "lightgrey";
+        document.getElementById("passwort2").style.backgroundColor = "lightgrey";
+        if (id_mitarbeiter == "" || id_mitarbeiter == 0) {
+            fehlermeldung += "Bitte geben Sie ein Passwort ein.<br>";
+        }
     } else {
         if (passwort1 != passwort2) {
             fehlermeldung += "Die Passwörter stimmen nicht überein.<br>";
@@ -130,7 +170,7 @@ function validierung() {
     if (fehlermeldung == "") {
         document.getElementById("speichern").disabled = false;
     } else {
-        //document.getElementById("speichern").disabled = true; 
+        document.getElementById("speichern").disabled = true; 
     }
 }
 

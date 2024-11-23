@@ -36,7 +36,9 @@ class Benutzer {
 		if ($_SESSION["mobile"] == "mobile") {
 			// Mobile Version - gleiche Tabelleninhalte wie unten innerhalb der else{} Anweisung, nur dass jedes Element eine ganze Zeile einnimmt und die Schriftgröße 50px beträgt
 			echo '<table style="width: 100%; font-size: 50px;">
-			<tr><td>Benutzername: </td></tr>
+			<tr><td>Benutzername: 
+			<input type="hidden" name="id_mitarbeiter" id="id_mitarbeiter" value="'.$benutzer->ID.'">
+			</td></tr>
 			<tr><td><input type="text" name="benutzername" id="benutzername" value="'.$benutzer->benutzername.'" style="width: 100%; height: 100px; background-color: lightcoral;" placeholder="Wird automatisch ausgefüllt" onblur="validierung()"></td></tr>
 			<tr><td>Vorname:</td></tr>
 			<tr><td><input type="text" name="vorname" id="vorname" value="'.$benutzer->vorname.'" style="width: 100%; height: 100px; background-color: lightcoral;" onblur="validierung()"></td></tr>
@@ -49,8 +51,8 @@ class Benutzer {
 			<tr><td>Ort:</td></tr>
 			<tr><td><input type="text" name="ort" id="ort" value="'.$benutzer->kontakt->ort.'" style="width: 100%; height: 100px;"></td></tr>
 			<tr><td>Telefonnummer:</td></tr>
-			<tr><td><input type="text" name="telefonnummer" id="telefonnummer" value="'.$benutzer->kontakt->telefonnummer.'" style="width: 100%; height: 100px; background-color: lightcoral;" onblur="validierung()"></td></tr>
-			<tr><td>Mobil:</td></tr>
+			<tr><td><input type="text" name="telefonnummer" id="telefonnummer" value="'.$benutzer->kontakt->telefonnummer.'" style="width: 100%; height: 100px; background-color: lightcoral;" onblur="validierung()"></td></tr>';
+			echo '<tr><td>Mobil:</td></tr>
 			<tr><td><input type="text" name="mobil" id="mobil" value="'.$benutzer->kontakt->mobil.'" style="width: 100%; height: 100px; background-color: lightcoral;" onblur="validierung()"></td></tr>
 			<tr><td>Email:</td></tr>
 			<tr><td><input type="text" name="email" id="email" value="'.$benutzer->kontakt->email.'" style="width: 100%; height: 100px; background-color: lightcoral;" onblur="validierung()"></td></tr>
@@ -66,7 +68,9 @@ class Benutzer {
 		} else {
 			echo '<table style="width: 100%; font-size: 20px;">
 			<tr>
-				<td>Benutzername: </td><td colspan="3"><input type="text" name="benutzername" id="benutzername" value="'.$benutzer->benutzername.'" style="width: 100%; background-color: lightcoral;" placeholder="Falls leer, wird das Feld automatisch mit Ihrem Namen gefüllt" onblur="validierung()"></td>
+				<td>Benutzername: 
+				<input type="hidden" name="id_mitarbeiter" id="id_mitarbeiter" value="'.$benutzer->ID.'">
+				</td><td colspan="3"><input type="text" name="benutzername" id="benutzername" value="'.$benutzer->benutzername.'" style="width: 100%; background-color: lightcoral;" placeholder="Falls leer, wird das Feld automatisch mit Ihrem Namen gefüllt" onblur="validierung()"></td>
 			</tr>
 			<tr>
 				<td>Vorname:</td><td><input type="text" name="vorname" id="vorname" value="'.$benutzer->vorname.'" style="width: 100%; background-color: lightcoral;" onblur="validierung()"></td>
@@ -80,15 +84,15 @@ class Benutzer {
 				<td>Ort:</td><td><input type="text" name="ort" id="ort" value="'.$benutzer->kontakt->ort.'" style="width: 100%;"></td>
 			</tr>
 			<tr>
-				<td>Telefonnummer:</td><td><input type="text" name="telefonnummer" id="telefonnummer" style="width: 100%; background-color: lightcoral;" onblur="validierung()"></td>
-				<td>Mobil:</td><td><input type="text" name="mobil" id="mobil" style="background-color: lightcoral;" style="width: 100%;" onblur="validierung()"></td>
+				<td>Telefonnummer:</td><td><input type="text" name="telefonnummer" id="telefonnummer" value="'.$benutzer->kontakt->telefonnummer.'" style="width: 100%; background-color: lightcoral;" onblur="validierung()"></td>
+				<td>Mobil:</td><td><input type="text" name="mobil" id="mobil" value="'.$benutzer->kontakt->mobil.'" style="background-color: lightcoral;" style="width: 100%;" onblur="validierung()"></td>
 			</tr>
 			<tr>
 				<td>Email:</td><td colspan="3"><input type="text" name="email" style="background-color: lightcoral;" id="email" value="'.$benutzer->kontakt->email.'" style="width: 100%;" onblur="validierung()"></td>
 			</tr>
 			<tr>
-				<td>Passwort:</td><td><input type="text" name="passwort1" id="passwort1" value="'.$benutzer->kontakt->telefonnummer.'" style="width: 100%; background-color: lightcoral;" onblur="validierung()"></td>
-				<td>Wiederholung:</td><td><input type="text" name="passwort2" id="passwort2" value="'.$benutzer->kontakt->mobil.'" style="width: 100%; background-color: lightcoral;" onblur="validierung()"></td>
+				<td>Passwort:</td><td><input type="text" name="passwort1" id="passwort1"  style="width: 100%; background-color: lightcoral;" onblur="validierung()"></td>
+				<td>Wiederholung:</td><td><input type="text" name="passwort2" id="passwort2" style="width: 100%; background-color: lightcoral;" onblur="validierung()"></td>
 			</tr>
 			<tr>
 				<td></td><td colspan="3" style="font-size: 18px;">Mindestens 8 Zeichen, davon 1 Großbuchstabe, 1 Kleinbuchstabe und mindestens 1 Zahl.</td>
@@ -101,9 +105,6 @@ class Benutzer {
 			</table>';
 		}
 	}
-
-
-
 	public function formular_stammdaten_lesen() {
 		// Formular für Stammdaten lesen und ie Werte den Eigenschaften des Objekts zuordnen
 		$this->benutzername 		  = $_POST["benutzername"] ?? "";
@@ -127,12 +128,15 @@ class Benutzer {
 			$keys = array("benutzername", "vorname", "nachname", "strasse", "plz", "ort", "telefonnummer", "mobil", "email");
 			$this->scarlet_witch = $r2d2->transform(paket: $this, keys: $keys);
 
-			// Für das Passwort wählen wir eine Verschlüsselung ohne Möglichkeit zum Entschlüsseln 
-			$this->scarlet_witch["paket"]->passwort = password_hash($this->passwort, PASSWORD_DEFAULT);
-			$this->scarlet_witch["iv"] = c3po::verschluesseln($this->scarlet_witch["iv"]);
-			$this->speichern();
+			if($this->ID > 0) {
+				$this->bearbeiten();
+			} else {
+				// Für das Passwort wählen wir eine Verschlüsselung ohne Möglichkeit zum Entschlüsseln 
+				$this->scarlet_witch["paket"]->passwort = password_hash($this->passwort, PASSWORD_DEFAULT);
+				$this->scarlet_witch["iv"] = c3po::verschluesseln($this->scarlet_witch["iv"]);
+				$this->speichern();
+			}
 		}
-
 	}
 
 	public function login() {
@@ -167,7 +171,7 @@ class Benutzer {
 		VALUES ('".$this->scarlet_witch["paket"]->benutzername."', '".$this->scarlet_witch["paket"]->vorname."', '".$this->scarlet_witch["paket"]->nachname."', '".$this->scarlet_witch["paket"]->kontakt->strasse."', '".$this->scarlet_witch["paket"]->kontakt->plz."', '".$this->scarlet_witch["paket"]->kontakt->ort."', '".$this->scarlet_witch["paket"]->kontakt->telefonnummer."', '".$this->scarlet_witch["paket"]->kontakt->mobil."', '".$this->scarlet_witch["paket"]->kontakt->email."', '".$this->scarlet_witch["paket"]->passwort."', '".$this->scarlet_witch["iv"]."')";
 		#echo $sql_befehl.'<br>';
 		$this->ID = standard_sql($sql_befehl, "Benutzerdaten speichern");
-		$_SESSION["id_benutzer"] = $this->ID;
+		$_SESSION["id_mitarbeiter"] = $this->ID;
 	}
 
 	public function stammdaten_lesen() {
@@ -210,21 +214,65 @@ class Benutzer {
 		$mysqli = MyDatabase();
 		$abfrage = "SELECT `ID` FROM `mitarbeiter`";
 		$benutzer = Array();
+		
 		if($result = $mysqli->query($abfrage)) {
-		   while($row = $result->fetch_object()) {
+		    while($row = $result->fetch_object()) {
 				$id = $row->ID;
 				// Wir wollen an dieser Stelle keine ID angeben, um aus Zeitgründen das automatische Lesen aller Eigenschaften zu verhindern
-				$benutzer = new Benutzer();
-				$benutzer->ID = $id;
-				$benutzer->stammdaten_lesen();
-				$benutzer[] = $benutzer;
-		   }
+				$mitarbeiter = new Benutzer();
+				$mitarbeiter->ID = $id;
+				$mitarbeiter->stammdaten_lesen();
+				$benutzer[] = $mitarbeiter;
+		    }
 		}
+		
 		return $benutzer;
 	} 
 
-	public function emailadresse_verifizieren() {
-		// Verifizieren der Emailadresse
+	public static function dropdown_benutzer() {
+		$benutzer = Benutzer::stammdaten_alle_mitglieder();
+		#var_dump($benutzer);
+		echo '<select name="wahl_id_mitarbeiter" id="wahl_id_mitarbeiter" style="width: 80%; height: 50px; font-size: 36px;">';
+		foreach($benutzer as $b) {
+			echo '<option value="'.$b->ID.'" ';
+			if($b->ID == $_SESSION["id_mitarbeiter"]) {
+				echo 'selected';
+			}
+			echo '>'.$b->benutzername.'</option>';
+		}
+		echo '</select>';
+	}
+
+	public function bearbeiten() {
+		// Bearbeiten der Daten in der Datenbank
+		$sql_befehl = "UPDATE mitarbeiter SET 
+		`benutzername` = '".$this->scarlet_witch["paket"]->benutzername."',
+		`vorname` = '".$this->scarlet_witch["paket"]->vorname."',
+		`nachname` = '".$this->scarlet_witch["paket"]->nachname."',
+		`strasse` = '".$this->scarlet_witch["paket"]->kontakt->strasse."',
+		`plz` = '".$this->scarlet_witch["paket"]->kontakt->plz."',
+		`ort` = '".$this->scarlet_witch["paket"]->kontakt->ort."',
+		`telefonnummer` = '".$this->scarlet_witch["paket"]->kontakt->telefonnummer."',
+		`mobil` = '".$this->scarlet_witch["paket"]->kontakt->mobil."',
+		`email` = '".$this->scarlet_witch["paket"]->kontakt->email."',
+		`iv` = '".c3po::verschluesseln($this->scarlet_witch["iv"])."' WHERE `ID` = '".$this->ID."'";
+		echo $sql_befehl.'<br>';
+		/*
+		standard_sql($sql_befehl, "Benutzerdaten bearbeiten");
+
+		// Passwort wird nur geändert, wenn ein neues Passwort eingegeben wurde
+		if($this->passwort != "") {
+			$this->passwort_nach_reset($this->passwort);	
+		}
+		*/
+	}
+
+	public function passwort_nach_reset($passwort) {
+		// Das Passwort wird nach einem Reset gesetzt
+		$this->passwort = password_hash($passwort, PASSWORD_DEFAULT);
+		$sql_befehl = "UPDATE Benutzer SET `passwort`= '".$this->passwort."' WHERE `ID` = '".$this->ID."'";
+		
+		standard_sql($sql_befehl, "Passwort nach Reset setzen");
 	}
 
 	public function loeschen() {

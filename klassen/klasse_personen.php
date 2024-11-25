@@ -18,6 +18,8 @@ class Benutzer {
 	public $benutzername;
 	public $kontakt; // Eigenständige Klasse
 	public $passwort;
+	public $profil;
+	public $profil_unserialized;
 
 	// Für die Ver- und Entschlüsselung
 	public $scarlet_witch; // Verschlüsselte Form des Objekts als Array mit den Keys "paket" und "iv"
@@ -61,7 +63,10 @@ class Benutzer {
 			<tr><td>Wiederholung:</td></tr>
 			<tr><td><input type="text" name="passwort2" id="passwort2" style="width: 100%; height: 100px; background-color: lightcoral;" onblur="validierung()"></td></tr>
 			<tr><td><div style="height: 20px;"></div></td></tr>
-			<tr><td><input type="submit" value="Speichern" id="speichern" style="height: 80px;" disabled></td></tr>
+			<tr><td>';
+			Profile::formular_profile();
+			echo '</td></tr>';
+			echo '<tr><td><input type="submit" value="Speichern" id="speichern" style="height: 80px;" disabled></td></tr>
 			<tr><td colspan="3" style="font-size: 48; color: red;" id="fehlermeldung"></td></tr>
 			</table>';
 
@@ -100,7 +105,10 @@ class Benutzer {
 			<tr>
 				<td></td><td colspan="3" style="font-size: 18px;">Wir benötigen entweder Ihre Telefonnummer oder die Emailadresse, um Ihre Identität zu überprüfen.</td>
 			</tr>
-				<tr><td></td><td><input type="submit" id="speichern" value="Speichern" disabled></td></tr>
+			<tr><td colspan="4">';
+			Profile::formular_profile();
+			echo '</td></tr>';
+			echo '<tr><td></td><td><input type="submit" id="speichern" value="Speichern" disabled></td></tr>
 				<tr><td></td><td colspan="3" style="font-size: 24; color: red;" id="fehlermeldung"></td></tr>
 			</table>';
 		}
@@ -118,6 +126,7 @@ class Benutzer {
 		$this->kontakt->email 		  = $_POST["email"] ?? "";
 		$this->passwort 			  = $_POST["passwort1"] ?? "";
 		$paswort_test 				  = $_POST["passwort2"] ?? "";
+		$this->profil 				  = Profile::formular_profile_lesen();
 		if ($this->passwort != $paswort_test) {
 			echo "Die Passwörter stimmen nicht überein.";
 		} else {
@@ -167,8 +176,8 @@ class Benutzer {
 
 	public function speichern() {
 		// Speichern der Daten in der Datenbank
-		$sql_befehl = "INSERT INTO mitarbeiter (benutzername, vorname, nachname, strasse, plz, ort, telefonnummer, mobil, email, passwort, iv) 
-		VALUES ('".$this->scarlet_witch["paket"]->benutzername."', '".$this->scarlet_witch["paket"]->vorname."', '".$this->scarlet_witch["paket"]->nachname."', '".$this->scarlet_witch["paket"]->kontakt->strasse."', '".$this->scarlet_witch["paket"]->kontakt->plz."', '".$this->scarlet_witch["paket"]->kontakt->ort."', '".$this->scarlet_witch["paket"]->kontakt->telefonnummer."', '".$this->scarlet_witch["paket"]->kontakt->mobil."', '".$this->scarlet_witch["paket"]->kontakt->email."', '".$this->scarlet_witch["paket"]->passwort."', '".$this->scarlet_witch["iv"]."')";
+		$sql_befehl = "INSERT INTO mitarbeiter (benutzername, vorname, nachname, strasse, plz, ort, telefonnummer, mobil, email, passwort, profile, iv) 
+		VALUES ('".$this->scarlet_witch["paket"]->benutzername."', '".$this->scarlet_witch["paket"]->vorname."', '".$this->scarlet_witch["paket"]->nachname."', '".$this->scarlet_witch["paket"]->kontakt->strasse."', '".$this->scarlet_witch["paket"]->kontakt->plz."', '".$this->scarlet_witch["paket"]->kontakt->ort."', '".$this->scarlet_witch["paket"]->kontakt->telefonnummer."', '".$this->scarlet_witch["paket"]->kontakt->mobil."', '".$this->scarlet_witch["paket"]->kontakt->email."', '".$this->scarlet_witch["paket"]->passwort."', '".$this->profil."', '".$this->scarlet_witch["iv"]."')";
 		#echo $sql_befehl.'<br>';
 		$this->ID = standard_sql($sql_befehl, "Benutzerdaten speichern");
 		$_SESSION["id_mitarbeiter"] = $this->ID;
@@ -204,6 +213,9 @@ class Benutzer {
 				$this->kontakt->telefonnummer = $paket["paket"]->kontakt->telefonnummer;
 				$this->kontakt->mobil = $paket["paket"]->kontakt->mobil;
 				$this->kontakt->email = $paket["paket"]->kontakt->email;
+
+				$this->profil = $row->profile;
+				$this->profil_unserialized = unserialize($this->profil);
 		   }
 		}
 		
@@ -235,8 +247,10 @@ class Benutzer {
 		echo '<select name="wahl_id_mitarbeiter" id="wahl_id_mitarbeiter" style="width: 80%; height: 50px; font-size: 36px;">';
 		foreach($benutzer as $b) {
 			echo '<option value="'.$b->ID.'" ';
-			if($b->ID == $_SESSION["id_mitarbeiter"]) {
-				echo 'selected';
+			if(isset($_SESSION["id_mitarbeiter"])) {
+				if($b->ID == $_SESSION["id_mitarbeiter"]) {
+					echo 'selected';
+				}
 			}
 			echo '>'.$b->benutzername.'</option>';
 		}
@@ -246,20 +260,21 @@ class Benutzer {
 	public function bearbeiten() {
 		// Bearbeiten der Daten in der Datenbank
 		$sql_befehl = "UPDATE mitarbeiter SET 
-		`benutzername` = '".$this->scarlet_witch["paket"]->benutzername."',
-		`vorname` = '".$this->scarlet_witch["paket"]->vorname."',
-		`nachname` = '".$this->scarlet_witch["paket"]->nachname."',
-		`strasse` = '".$this->scarlet_witch["paket"]->kontakt->strasse."',
-		`plz` = '".$this->scarlet_witch["paket"]->kontakt->plz."',
-		`ort` = '".$this->scarlet_witch["paket"]->kontakt->ort."',
+		`benutzername`  = '".$this->scarlet_witch["paket"]->benutzername."',
+		`vorname`       = '".$this->scarlet_witch["paket"]->vorname."',
+		`nachname`      = '".$this->scarlet_witch["paket"]->nachname."',
+		`strasse`       = '".$this->scarlet_witch["paket"]->kontakt->strasse."',
+		`plz`           = '".$this->scarlet_witch["paket"]->kontakt->plz."',
+		`ort`           = '".$this->scarlet_witch["paket"]->kontakt->ort."',
 		`telefonnummer` = '".$this->scarlet_witch["paket"]->kontakt->telefonnummer."',
-		`mobil` = '".$this->scarlet_witch["paket"]->kontakt->mobil."',
-		`email` = '".$this->scarlet_witch["paket"]->kontakt->email."',
-		`iv` = '".c3po::verschluesseln($this->scarlet_witch["iv"])."' WHERE `ID` = '".$this->ID."'";
+		`mobil`         = '".$this->scarlet_witch["paket"]->kontakt->mobil."',
+		`email`         = '".$this->scarlet_witch["paket"]->kontakt->email."',
+		`profile`       = '".$this->profil."',
+		`iv`            = '".c3po::verschluesseln($this->scarlet_witch["iv"])."' WHERE `ID` = '".$this->ID."'";
 		echo $sql_befehl.'<br>';
-		/*
+		
 		standard_sql($sql_befehl, "Benutzerdaten bearbeiten");
-
+		/*
 		// Passwort wird nur geändert, wenn ein neues Passwort eingegeben wurde
 		if($this->passwort != "") {
 			$this->passwort_nach_reset($this->passwort);	
@@ -277,6 +292,51 @@ class Benutzer {
 
 	public function loeschen() {
 		// Löschen des Benutzers aus der Datenbank
+	}
+}
+
+class Profile {
+	public $ID;
+	public $profil;
+	public $aktiv;
+
+	public static function get_alle_profile() {
+		// Alle Profile aus der Datenbank lesen
+		$mysqli = MyDatabase();
+		$abfrage = "SELECT * FROM `profile`";
+		$profile = Array();
+		
+		if($result = $mysqli->query($abfrage)) {
+		    while($row = $result->fetch_object()) {
+				$profil = new Profile();
+				$profil->ID = $row->ID;
+				$profil->profil = $row->profil;
+				$profil->aktiv = $row->aktiv;
+				$profile[] = $profil;
+		    }
+		}	
+		return $profile;
+	}
+
+	public static function formular_profile() {
+		// Hier sollen alle profile in zwei Spalten jeweils mit einer Checkbox angezeigt werden
+		$profile = self::get_alle_profile();
+		echo '<table>';
+		$zaehler = -1;
+		foreach($profile as $p) {
+			echo '<tr style="font-size: '.$_SESSION["font_size"].';"><td><input type="checkbox" name="profile_'.$p->ID.'" style="height: 50px; width: 50px;" value="'.$p->ID.'"></td><td>'.$p->profil.'</td></tr>';
+		}
+		echo '</table>';
+	}
+
+	public static function formular_profile_lesen() {
+		// Hier werden die Checkboxen ausgewertet und das Array seriasliisert und zurückgegeben
+		$profile = self::get_alle_profile();
+		$profile_array = Array();
+		foreach($profile as $p) {
+			$profile_array[$p->ID] = $_POST["profile_".$p->ID] ?? 0;
+		}
+		return serialize($profile_array);
 	}
 }
 ?>

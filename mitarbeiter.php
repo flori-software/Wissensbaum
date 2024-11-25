@@ -60,6 +60,7 @@ echo '<a href="mitarbeiter.php?aktion=neuer_mitarbeiter">Neuen Mitarbeiter anleg
 
 echo '<form action="mitarbeiter.php?aktion='.$aktion.'" method="POST">';
 Benutzer::formular_stammdaten($benutzer);
+
 echo '</form>';
 
 include("page_end.php");

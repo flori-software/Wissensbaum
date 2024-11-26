@@ -333,7 +333,7 @@ class Profile {
 					echo 'checked';
 				}
 			}
-			echo '></td><td>'.$p->profil.'</td></tr>';
+			echo '></td><td>'.mach_drausUTF8($p->profil).'</td></tr>';
 		}
 		echo '</table>';
 	}

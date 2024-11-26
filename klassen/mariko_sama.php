@@ -64,4 +64,10 @@ function GetMyVar($x, $leer, $unwanted_value = "") {
 }
 
 
+function mach_drausUTF8($text, $format = "UTF-8", $from_encoding = "ISO-8859-1") {
+	if(is_null($text)) {$text = "";}
+	if(!is_string($text)) {$wert = strval($text);}
+	return mb_convert_encoding(string: $text, to_encoding: $format, from_encoding: $from_encoding);
+}
+
 ?>

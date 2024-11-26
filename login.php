@@ -20,7 +20,7 @@ font-weight: lighter;">';
 $hoehe_feld = $_SESSION["font_size"] * 1.4;
 
 echo 'Benutzername:<br>
-<form action="meine_hilfe.php?aktion=login" method="post">
+<form action="meine_fobi.php?aktion=login" method="post">
 <input type="text" name="benutzername" id="benutzername" style="width: 100%; height: '.$hoehe_feld.'px;"><br>
 Passwort:<br>
 <input type="password" name="passwort" id="passwort" style="width: 100%; height: '.$hoehe_feld.'px;"><br>

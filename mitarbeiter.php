@@ -53,7 +53,11 @@ if($benutzer->ID > 0) {
 
 echo '<form action="mitarbeiter.php?aktion=wahl_mitarbeiter" method="POST">';
 Benutzer::dropdown_benutzer();
-echo '<input type="submit" value="Mitarbeiter auswählen">';
+echo '<input type="submit" value="Mitarbeiter auswählen" ';
+if($_SESSION["mobile"] == "mobile") {
+    echo 'style="height: 80px;"';
+}
+echo '>';
 echo '</form>';
 
 echo '<a href="mitarbeiter.php?aktion=neuer_mitarbeiter">Neuen Mitarbeiter anlegen</a>';

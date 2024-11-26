@@ -64,7 +64,7 @@ class Benutzer {
 			<tr><td><input type="text" name="passwort2" id="passwort2" style="width: 100%; height: 100px; background-color: lightcoral;" onblur="validierung()"></td></tr>
 			<tr><td><div style="height: 20px;"></div></td></tr>
 			<tr><td>';
-			Profile::formular_profile();
+			Profile::formular_profile($benutzer);
 			echo '</td></tr>';
 			echo '<tr><td><input type="submit" value="Speichern" id="speichern" style="height: 80px;" disabled></td></tr>
 			<tr><td colspan="3" style="font-size: 48; color: red;" id="fehlermeldung"></td></tr>
@@ -106,7 +106,7 @@ class Benutzer {
 				<td></td><td colspan="3" style="font-size: 18px;">Wir benötigen entweder Ihre Telefonnummer oder die Emailadresse, um Ihre Identität zu überprüfen.</td>
 			</tr>
 			<tr><td colspan="4">';
-			Profile::formular_profile();
+			Profile::formular_profile($benutzer);
 			echo '</td></tr>';
 			echo '<tr><td></td><td><input type="submit" id="speichern" value="Speichern" disabled></td></tr>
 				<tr><td></td><td colspan="3" style="font-size: 24; color: red;" id="fehlermeldung"></td></tr>
@@ -188,15 +188,15 @@ class Benutzer {
 		$abfrage = "SELECT * FROM `mitarbeiter` WHERE `ID` = '".$this->ID."'";
 		if($result = $mysqli->query($abfrage)) {
 		   while($row = $result->fetch_object()) {
-				$this->benutzername = $row->benutzername;
-				$this->vorname = $row->vorname;
-				$this->nachname = $row->nachname;
-				$this->kontakt->strasse = $row->strasse;
-				$this->kontakt->plz = $row->plz;
-				$this->kontakt->ort = $row->ort;
+				$this->benutzername           = $row->benutzername;
+				$this->vorname                = $row->vorname;
+				$this->nachname               = $row->nachname;
+				$this->kontakt->strasse       = $row->strasse;
+				$this->kontakt->plz           = $row->plz;
+				$this->kontakt->ort           = $row->ort;
 				$this->kontakt->telefonnummer = $row->telefonnummer;
-				$this->kontakt->mobil = $row->mobil;
-				$this->kontakt->email = $row->email;
+				$this->kontakt->mobil         = $row->mobil;
+				$this->kontakt->email         = $row->email;
 				$iv = c3po::lesen($row->iv);
 
 				$r2d2 = new r2d2();
@@ -205,17 +205,19 @@ class Benutzer {
 				$paket = $r2d2->transform(paket: $this, keys: $keys, iv: $iv, aktion: "decoden");
 
 				$this->benutzername = $paket["paket"]->benutzername;
-				$this->vorname = $paket["paket"]->vorname;
-				$this->nachname = $paket["paket"]->nachname;
-				$this->kontakt->strasse = $paket["paket"]->kontakt->strasse;
-				$this->kontakt->plz = $paket["paket"]->kontakt->plz;
-				$this->kontakt->ort = $paket["paket"]->kontakt->ort;
+				$this->vorname                = $paket["paket"]->vorname;
+				$this->nachname               = $paket["paket"]->nachname;
+				$this->kontakt->strasse       = $paket["paket"]->kontakt->strasse;
+				$this->kontakt->plz           = $paket["paket"]->kontakt->plz;
+				$this->kontakt->ort           = $paket["paket"]->kontakt->ort;
 				$this->kontakt->telefonnummer = $paket["paket"]->kontakt->telefonnummer;
-				$this->kontakt->mobil = $paket["paket"]->kontakt->mobil;
-				$this->kontakt->email = $paket["paket"]->kontakt->email;
+				$this->kontakt->mobil         = $paket["paket"]->kontakt->mobil;
+				$this->kontakt->email         = $paket["paket"]->kontakt->email;
 
 				$this->profil = $row->profile;
-				$this->profil_unserialized = unserialize($this->profil);
+				if(isset($this->profil)) {
+					$this->profil_unserialized = unserialize($this->profil);
+				}
 		   }
 		}
 		
@@ -271,21 +273,21 @@ class Benutzer {
 		`email`         = '".$this->scarlet_witch["paket"]->kontakt->email."',
 		`profile`       = '".$this->profil."',
 		`iv`            = '".c3po::verschluesseln($this->scarlet_witch["iv"])."' WHERE `ID` = '".$this->ID."'";
-		echo $sql_befehl.'<br>';
+		#echo $sql_befehl.'<br>';
 		
 		standard_sql($sql_befehl, "Benutzerdaten bearbeiten");
-		/*
+		
 		// Passwort wird nur geändert, wenn ein neues Passwort eingegeben wurde
 		if($this->passwort != "") {
 			$this->passwort_nach_reset($this->passwort);	
 		}
-		*/
+		
 	}
 
 	public function passwort_nach_reset($passwort) {
 		// Das Passwort wird nach einem Reset gesetzt
 		$this->passwort = password_hash($passwort, PASSWORD_DEFAULT);
-		$sql_befehl = "UPDATE Benutzer SET `passwort`= '".$this->passwort."' WHERE `ID` = '".$this->ID."'";
+		$sql_befehl = "UPDATE mitarbeiter SET `passwort`= '".$this->passwort."' WHERE `ID` = '".$this->ID."'";
 		
 		standard_sql($sql_befehl, "Passwort nach Reset setzen");
 	}
@@ -318,13 +320,20 @@ class Profile {
 		return $profile;
 	}
 
-	public static function formular_profile() {
+	public static function formular_profile($benutzer = NULL) {
 		// Hier sollen alle profile in zwei Spalten jeweils mit einer Checkbox angezeigt werden
 		$profile = self::get_alle_profile();
 		echo '<table>';
 		$zaehler = -1;
 		foreach($profile as $p) {
-			echo '<tr style="font-size: '.$_SESSION["font_size"].';"><td><input type="checkbox" name="profile_'.$p->ID.'" style="height: 50px; width: 50px;" value="'.$p->ID.'"></td><td>'.$p->profil.'</td></tr>';
+			echo '<tr style="font-size: '.$_SESSION["font_size"].';"><td><input type="checkbox" name="profile_'.$p->ID.'" style="height: 50px; width: 50px;" value="'.$p->ID.'" ';
+			// Wenn $p->ID im Aray $benutzer->profil_unserialized enthalten ist, dann wird die Checkbox aktiviert
+			if(isset($benutzer)) {
+				if(in_array($p->ID, $benutzer->profil_unserialized)) {
+					echo 'checked';
+				}
+			}
+			echo '></td><td>'.$p->profil.'</td></tr>';
 		}
 		echo '</table>';
 	}

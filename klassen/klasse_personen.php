@@ -320,7 +320,7 @@ class Profile {
 		return $profile;
 	}
 
-	public static function formular_profile($benutzer = NULL) {
+	public static function formular_profile($benutzer) {
 		// Hier sollen alle profile in zwei Spalten jeweils mit einer Checkbox angezeigt werden
 		$profile = self::get_alle_profile();
 		echo '<table>';
@@ -328,7 +328,7 @@ class Profile {
 		foreach($profile as $p) {
 			echo '<tr style="font-size: '.$_SESSION["font_size"].';"><td><input type="checkbox" name="profile_'.$p->ID.'" style="height: 50px; width: 50px;" value="'.$p->ID.'" ';
 			// Wenn $p->ID im Aray $benutzer->profil_unserialized enthalten ist, dann wird die Checkbox aktiviert
-			if(isset($benutzer)) {
+			if(is_array($benutzer->profil_unserialized)) {
 				if(in_array($p->ID, $benutzer->profil_unserialized)) {
 					echo 'checked';
 				}

@@ -48,11 +48,49 @@ class Fortbildung {
     }
 
     public function bearbeiten() {
-
+        
     }
 
     public function lesen() {
+        $mysqli = MyDatabase();
+        $abfrage = "SELECT * FROM fobi WHERE ID = $this->ID";
+        $ergebnis = $mysqli->query($abfrage);
+        while($row = $ergebnis->fetch_assoc()) {
+            $this->titel               = $row["titel"];
+            $this->beschreibung        = $row["beschreibung"];
+            $this->datum               = $row["datum"];
+            $this->ort                 = $row["ort"];
+            $this->punkte              = $row["punkte"];
+            $this->profil_unserialized = unserialize($row["profil"]);
+        }
+    }
 
+    public static function alle_lesen() {
+        $mysqli = MyDatabase();
+        $abfrage = "SELECT * FROM fobi ORDER BY datum DESC";
+        $ergebnis = $mysqli->query($abfrage);
+        $fortbildungen = array();
+        while($row = $ergebnis->fetch_assoc()) {
+            $fortbildung = new Fortbildung();
+            $fortbildung->ID = $row["ID"];
+            $fortbildung->lesen();  
+            $fortbildungen[] = $fortbildung;
+        }
+        return $fortbildungen;
+    }
+
+    public function zeige_fobi() {
+        echo '<div style="font-family: QuicksandLight;
+        font-size: '.$_SESSION["font_size"].'px;
+        font-weight: lighter;">';
+        echo '<p><h2>'.$this->titel.'</h2></p>';
+        echo '<p>'.$this->beschreibung.'</p>';
+        echo '<p>'.date_to_datum($this->datum).'&nbsp'.$this->ort.'</p>';
+        #echo '<p>'.$this->ort.'</p>';
+        echo '<p>Punkte für Ihren Wissensbaum: '.$this->punkte.'</p>';
+        echo '<p>'.$this->profil.'</p>';
+        echo '<p><a href="meine_fobi.php?aktion=anmelden">Zur Fortbildung Anmelden</a><p>';
+        echo '</div><hr>';
     }
 }
 

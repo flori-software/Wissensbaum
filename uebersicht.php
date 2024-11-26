@@ -13,10 +13,11 @@ switch($aktion) {
         $fobi = new Fortbildung;
         $fobi->formular_stammdaten();
     break;
-    
+
     case 'neue_fobi_speichern':
         $fobi = new Fortbildung;
         $fobi->formular_stammdaten_lesen();
+        $fobi->speichern();
         echo 'Neue Fortbildung gespeichert.<br>';
     break;
 }

@@ -2,6 +2,7 @@
 include("page_start.php");
 include("klassen/mariko_sama.php");
 include("klassen/klasse_personen.php");
+include("klassen/klasse_fortbildung.php");
 include("klassen/human_android_comunicator.php");
 include("klassen/db_functions.php");
 
@@ -12,12 +13,24 @@ switch($aktion) {
         $fobi = new Fortbildung;
         $fobi->ID = $_GET["id_fortbildung"];
         $fobi->lesen();
-        $fobi->anmelden();
+        $fobi->anmelden($_SESSION["id_benutzer"]);
         echo 'Sie haben sich soeben für die Fortbildung '.$fobi->titel.' angemeldet und '.$fobi->punkte.' Punkte für Ihren Wissensbaum hinzugewonnen!.<br>';
 
         
     break;
+
+    case 'login':
+        $benutzer = new Benutzer;
+        $benutzer->login();
+    break;
 }
+
+// Überprüfen, ob der Benutzer eingeloggt ist
+if(isset($_SESSION["id_benutzer"])) {
+    $benutzer = new Benutzer(id: $_SESSION["id_benutzer"]);
+    echo '<h2>Willkommen '.$benutzer->vorname.' '.$benutzer->nachname.'!</h2>';
+}
+
 echo '<style>
     input {
         width: 80%;

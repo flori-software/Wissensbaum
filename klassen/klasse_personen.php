@@ -154,7 +154,7 @@ class Benutzer {
 		$passwort     = $_POST["passwort"] ?? "";
 
 		$mysqli = MyDatabase();
-		$abfrage = "SELECT `ID`, `benutzername`, `passwort`, `iv` FROM `Benutzer`";
+		$abfrage = "SELECT `ID`, `benutzername`, `passwort`, `iv` FROM `mitarbeiter`";
 		if($result = $mysqli->query($abfrage)) {
 		    while($row = $result->fetch_object()) {
 				// Der Benutzername muss zunächst entschlüsselt werden
@@ -168,8 +168,9 @@ class Benutzer {
 						$this->ID = $row->ID;
 						$this->stammdaten_lesen();
 						$_SESSION["id_benutzer"] = $this->ID;
+						echo '<script>location.href="meine_fobi.php";</script>';
 					}
-				}
+				} 
 		   }
 		}
 	}
@@ -347,5 +348,7 @@ class Profile {
 		}
 		return serialize($profile_array);
 	}
+
+
 }
 ?>

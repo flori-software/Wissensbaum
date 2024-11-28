@@ -95,7 +95,7 @@ class Fortbildung {
 
     public function anmelden($ID_person) {
         $mysqli = MyDatabase();
-
+        
         // Hinzufügen der Punkte
         # some Code....
     }

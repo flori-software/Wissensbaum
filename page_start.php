@@ -69,7 +69,6 @@ if ($_SESSION["mobile"] == "mobile") {
 }
 
 
-
 ?>
 
 <script>

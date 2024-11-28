@@ -19,6 +19,7 @@ class Benutzer {
 	public $kontakt; // Eigenständige Klasse
 	public $passwort;
 	public $profil;
+	public $punkte;
 	public $profil_unserialized;
 
 	// Für die Ver- und Entschlüsselung
@@ -219,6 +220,7 @@ class Benutzer {
 				if(isset($this->profil)) {
 					$this->profil_unserialized = unserialize($this->profil);
 				}
+				$this->punkte = $row->punkte;
 		   }
 		}
 		
@@ -295,6 +297,40 @@ class Benutzer {
 
 	public function loeschen() {
 		// Löschen des Benutzers aus der Datenbank
+	}
+
+	public function add_points($points) {
+		// Punkte hinzufügen
+		$this->stammdaten_lesen(); // Lesen des aktuellen Punktestands
+		$this->punkte += $points;
+		$sql_befehl = "UPDATE mitarbeiter Set `punkte` = '".$this->punkte."' WHERE `ID` = '".$this->ID."'";
+		standard_sql($sql_befehl, "Punkte hinzufügen");
+	}
+
+	public function get_my_fobi() {
+		// Alle Fortbildungen des Benutzers aus der Datenbank lesen
+		$mysqli = MyDatabase();
+		$abfrage = "SELECT * FROM fobi_buchungen WHERE id_mitarbeiter = '".$this->ID."'";
+		$fortbildungen = Array();
+		
+		if($result = $mysqli->query($abfrage)) {
+		    while($row = $result->fetch_object()) {
+				$fobi = new Fortbildung();
+				$fobi->ID = $row->id_fobi;
+				$fobi->lesen();
+				$fortbildungen[] = $fobi;
+		    }
+		}
+		
+		return $fortbildungen;
+	}
+
+	public function show_my_fobi() {
+		// Alle Fortbildungen des Benutzers anzeigen
+		$fortbildungen = $this->get_my_fobi();
+		foreach($fortbildungen as $fobi) {
+			$fobi->zeige_fobi(angemeldet: 1);
+		}
 	}
 }
 

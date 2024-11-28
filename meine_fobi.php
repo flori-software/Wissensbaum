@@ -14,7 +14,7 @@ switch($aktion) {
         $fobi->ID = $_GET["id_fortbildung"];
         $fobi->lesen();
         $fobi->anmelden($_SESSION["id_benutzer"]);
-        echo 'Sie haben sich soeben für die Fortbildung '.$fobi->titel.' angemeldet und '.$fobi->punkte.' Punkte für Ihren Wissensbaum hinzugewonnen!.<br>';
+        echo 'Sie haben sich soeben für die Fortbildung '.$fobi->titel.' angemeldet und '.$fobi->punkte.' Punkte für Ihren Wissensbaum hinzugewonnen!<br>';
 
         
     break;
@@ -29,20 +29,25 @@ switch($aktion) {
 if(isset($_SESSION["id_benutzer"])) {
     $benutzer = new Benutzer(id: $_SESSION["id_benutzer"]);
     echo '<h2>Willkommen '.$benutzer->vorname.' '.$benutzer->nachname.'!</h2>';
-}
 
-echo '<style>
+    echo '<style>
     input {
         width: 80%;
         font-size: '.$_SESSION["font_size"].'px;
         font-weight: lighter;
         height: 40px;
     }
-</style>
-Zu diesen Fortbildungen haben Sie sich angemeldet:';
+    </style>
+    Zu diesen Fortbildungen haben Sie sich angemeldet:';
+    $benutzer->show_my_fobi();
+
+    
+} else {
+    echo '<h2>Willkommen!</h2>';
+    echo '<p>Bitte loggen Sie sich ein, um die Übersicht Ihrer Fortbildungen einzusehen.</p>';
+}
 
 
-echo '<p>Ihre bisheringen Erfolge:</p>';
 
 include("page_end.php");
 ?>

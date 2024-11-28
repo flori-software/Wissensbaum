@@ -79,7 +79,7 @@ class Fortbildung {
         return $fortbildungen;
     }
 
-    public function zeige_fobi() {
+    public function zeige_fobi($angemeldet = 0) {
         echo '<div style="font-family: QuicksandLight;
         font-size: '.$_SESSION["font_size"].'px;
         font-weight: lighter;">';
@@ -89,15 +89,23 @@ class Fortbildung {
         #echo '<p>'.$this->ort.'</p>';
         echo '<p>Punkte für Ihren Wissensbaum: '.$this->punkte.'</p>';
         echo '<p>'.$this->profil.'</p>';
-        echo '<p><a href="meine_fobi.php?aktion=anmelden&id_fortbildung='.$this->ID.'">Zur Fortbildung Anmelden</a><p>';
+        // Nur wenn jemand eingeloggt ist, kann er sich auch anmelden:
+        if(isset($_SESSION["id_benutzer"]) && $angemeldet == 0) {
+            echo '<p><a href="meine_fobi.php?aktion=anmelden&id_fortbildung='.$this->ID.'">Zur Fortbildung Anmelden</a><p>';
+        } elseif(!isset($_SESSION["id_benutzer"])) {
+            echo '<p style="color: olivedrab;">Bitte loggen Sie sich ein, um sich für die Fortbildung anzumelden.</p>';
+        }
+        
         echo '</div><hr>';
     }
 
     public function anmelden($ID_person) {
         $mysqli = MyDatabase();
-        
+        $abfrage = "INSERT INTO fobi_buchungen (`id_mitarbeiter`, `id_fobi`) VALUES ('".$_SESSION["id_benutzer"]."', '".$this->ID."')";
+        $mysqli->query($abfrage);
         // Hinzufügen der Punkte
-        # some Code....
+        $benutzer = new Benutzer($_SESSION["id_benutzer"]);
+        $benutzer->add_points($this->punkte);
     }
 }
 

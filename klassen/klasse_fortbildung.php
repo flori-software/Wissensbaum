@@ -89,8 +89,15 @@ class Fortbildung {
         #echo '<p>'.$this->ort.'</p>';
         echo '<p>Punkte für Ihren Wissensbaum: '.$this->punkte.'</p>';
         echo '<p>'.$this->profil.'</p>';
-        echo '<p><a href="meine_fobi.php?aktion=anmelden">Zur Fortbildung Anmelden</a><p>';
+        echo '<p><a href="meine_fobi.php?aktion=anmelden&id_fortbildung='.$this->ID.'">Zur Fortbildung Anmelden</a><p>';
         echo '</div><hr>';
+    }
+
+    public function anmelden($ID_person) {
+        $mysqli = MyDatabase();
+
+        // Hinzufügen der Punkte
+        # some Code....
     }
 }
 

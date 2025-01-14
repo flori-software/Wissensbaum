@@ -70,12 +70,28 @@ class Fortbildung {
         $abfrage = "SELECT * FROM fobi ORDER BY datum DESC";
         $ergebnis = $mysqli->query($abfrage);
         $fortbildungen = array();
-        while($row = $ergebnis->fetch_assoc()) {
-            $fortbildung = new Fortbildung();
-            $fortbildung->ID = $row["ID"];
-            $fortbildung->lesen();  
-            $fortbildungen[] = $fortbildung;
+
+        if(isset($_SESSION["id_benutzer"])) {
+            $benutzer = new Benutzer(id: $_SESSION["id_benutzer"]);
+            
+            while($row = $ergebnis->fetch_assoc()) {
+                $fortbildung = new Fortbildung();
+                $fortbildung->ID = $row["ID"];
+                $fortbildung->lesen();  
+                // Gibt es eine Schnittmenge zwischen den Arrays $benutzer->profil_unserialized und $fortbildung->profil_unserialized und sind die Zahlen der Schnittmenge größer als 0?
+                $schnittmenge = array_intersect($benutzer->profil_unserialized, $fortbildung->profil_unserialized);
+                if(count($schnittmenge) > 0) {
+                    foreach ($schnittmenge as $element) {
+                        // Nur wenn es sich tatsächlich um ein gespeichertes Profil handelt, woird die Fortbildung angezeigt
+                        if($element != 0) {
+                            $fortbildungen[] = $fortbildung;
+                        } 
+                    }  
+                }      
+            }
         }
+
+        
         return $fortbildungen;
     }
 
